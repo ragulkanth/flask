@@ -19,15 +19,15 @@ more.  Also keep in mind that signals are intended to notify subscribers
 and should not encourage subscribers to modify data.  You will notice that
 there are signals that appear to do the same thing like some of the
 builtin decorators do (eg: :data:`~flask.request_started` is very similar
-to :meth:`~flask.Flask.before_request`).  There are however difference in
-how they work.  The core :meth:`~flask.Flask.before_request` handler for
-example is executed in a specific order and is able to abort the request
+to :meth:`~flask.Flask.before_request`).  However, there are differences in
+how they work.  The core :meth:`~flask.Flask.before_request` handler, for
+example, is executed in a specific order and is able to abort the request
 early by returning a response.  In contrast all signal handlers are
 executed in undefined order and do not modify any data.
 
 The big advantage of signals over handlers is that you can safely
 subscribe to them for just a split second.  These temporary
-subscriptions are helpful for unittesting for example.  Say you want to
+subscriptions are helpful for unit testing for example.  Say you want to
 know what templates were rendered as part of a request: signals allow you
 to do exactly that.
 
@@ -45,7 +45,7 @@ signal.  When you subscribe to a signal, be sure to also provide a sender
 unless you really want to listen for signals from all applications.  This is
 especially true if you are developing an extension.
 
-For example, here is a helper context manager that can be used in a unittest
+For example, here is a helper context manager that can be used in a unit test
 to determine which templates were rendered and what variables were passed
 to the template::
 
@@ -187,4 +187,4 @@ Core Signals
 Take a look at :ref:`core-signals-list` for a list of all builtin signals.
 
 
-.. _blinker: https://pypi.python.org/pypi/blinker
+.. _blinker: https://pypi.org/project/blinker/

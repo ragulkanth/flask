@@ -1,43 +1,58 @@
+os: linux
 sudo: false
 language: python
 
-python:
-  - "2.6"
-  - "2.7"
-  - "pypy"
-  - "3.3"
-  - "3.4"
-
-env:
-  - REQUIREMENTS=lowest
-  - REQUIREMENTS=release
-  - REQUIREMENTS=devel
-
 matrix:
-  exclude:
-    # Python 3 support currently does not work with lowest requirements
-    - python: "3.3"
-      env: REQUIREMENTS=lowest
-    - python: "3.4"
-      env: REQUIREMENTS=lowest
+  include:
+    - python: 3.6
+      env: TOXENV=py,simplejson,devel,lowest,codecov
+    - python: 3.6
+      env: TOXENV=docs-html
+    - python: 3.5
+      env: TOXENV=py,codecov
+    - python: 3.4
+      env: TOXENV=py,codecov
+    - python: 2.7
+      env: TOXENV=py,simplejson,devel,lowest,codecov
+    - python: pypy3
+      env: TOXENV=py,codecov
+    - python: nightly
+      env: TOXENV=py
+    - os: osx
+      language: generic
+      env: TOXENV=py3,py2,codecov
+      cache:
+        pip: false
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - $HOME/Library/Caches/pip
+  allow_failures:
+    - python: pypy3
+    - python: nightly
+    - os: osx
+  fast_finish: true
 
+before_install:
+  - |
+    if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+      brew upgrade python
+      brew install python@2;
+      export PATH="/usr/local/opt/python/libexec/bin:${PATH}"
+    fi
 
 install:
-    - pip install tox
+  - pip install tox
 
 script:
-    - tox -e py-$REQUIREMENTS
+  - tox
+
+cache:
+  - pip
 
 branches:
-  except:
-    - website
+  only:
+    - master
+    - /^.*-maintenance$/
 
 notifications:
   email: false
-  irc:
-    channels:
-      - "chat.freenode.net#pocoo"
-    on_success: change
-    on_failure: always
-    use_notice: true
-    skip_join: true
